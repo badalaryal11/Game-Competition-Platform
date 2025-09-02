@@ -1,3 +1,6 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -6,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.saransa.game_app"
+    namespace = ""
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -36,6 +39,14 @@ android {
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
         }
+    }
+}
+
+buildscript {
+    
+    dependencies {
+        
+        classpath 'com.google.gms:google-services:4.4.1' // Or the latest version
     }
 }
 
