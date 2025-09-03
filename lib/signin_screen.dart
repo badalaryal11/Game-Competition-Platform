@@ -12,8 +12,11 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  // The GoogleSignIn constructor is now parameter-less.
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  // Initialize GoogleSignIn with clientId.
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    clientId:
+        '987383237018-0h1qmbn4528k7cditspks0j19jvr75jf.apps.googleusercontent.com', // <-- Add your client ID here
+  );
 
   bool _rememberMe = false;
   bool _isLoading = false;
@@ -46,7 +49,7 @@ class _SignInScreenState extends State<SignInScreen> {
       }
 
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:8080/api/auth/google'),
+        Uri.parse('flutter run'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({'idToken': idToken}),
       );

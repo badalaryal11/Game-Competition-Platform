@@ -46,7 +46,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   backgroundColor: Colors.grey[900],
                   child: const Icon(
                     Icons.camera_alt,
-                    color: Color(0x000000),
+                    color: Color(0x00000000),
                     size: 40,
                   ),
                 ),
