@@ -21,6 +21,40 @@ class _SignInScreenState extends State<SignInScreen> {
   bool _rememberMe = false;
   bool _isLoading = false;
 
+  // Add controllers at the top of the class
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  // Add error states
+  String? _emailError;
+  String? _passwordError;
+
+  // Add dispose method
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  // Add email validation method
+  bool _validateEmail(String email) {
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+
+    if (email.isEmpty) {
+      setState(() => _emailError = 'Email is required');
+      return false;
+    }
+
+    if (!emailRegex.hasMatch(email)) {
+      setState(() => _emailError = 'Please enter a valid email');
+      return false;
+    }
+
+    setState(() => _emailError = null);
+    return true;
+  }
+
   Future<void> _handleSignInAndBackendAuth() async {
     setState(() {
       _isLoading = true;
@@ -119,7 +153,11 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.05),
-                _buildTextField(hint: 'Email Address'),
+                _buildTextField(
+                  hint: 'Email Address',
+                  controller: _emailController,
+                  errorText: _emailError,
+                ),
                 const SizedBox(height: 16),
                 _buildTextField(hint: 'Password', obscureText: true),
                 const SizedBox(height: 16),
@@ -163,11 +201,18 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  Widget _buildTextField({required String hint, bool obscureText = false}) {
+  Widget _buildTextField({
+    required String hint,
+    bool obscureText = false,
+    TextEditingController? controller,
+    String? errorText,
+  }) {
     return TextField(
+      controller: controller,
       obscureText: obscureText,
       decoration: InputDecoration(
         hintText: hint,
+        errorText: errorText,
         hintStyle: GoogleFonts.poppins(color: Colors.grey),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
@@ -182,6 +227,11 @@ class _SignInScreenState extends State<SignInScreen> {
           horizontal: 20,
         ),
       ),
+      onChanged: (value) {
+        if (hint == 'Email Address') {
+          _validateEmail(value);
+        }
+      },
     );
   }
 
