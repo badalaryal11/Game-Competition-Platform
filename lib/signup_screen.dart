@@ -28,23 +28,45 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   style: GoogleFonts.poppins(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: const Color.fromRGBO(0, 0, 0, 0),
+                    color: Colors.black,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Play games. Sharpen your skills. Connect with other gamers.',
+                  'Play games. Sharpen your skills. Earn Money. Connect with other gamers.',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     color: Colors.grey[400],
                   ),
                 ),
+                // ...existing code...
                 const SizedBox(height: 32),
-                CircleAvatar(
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.grey[300]!, width: 1),
+                    image: const DecorationImage(
+                      image: AssetImage('assets/images/logo.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 32),
+                Text(
+                  'Upload Profile Picture',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    color: Colors.grey[400],
+                  ),
+                ),
+                const SizedBox(height: 32),
+                const CircleAvatar(
                   radius: 50,
-                  backgroundColor: Colors.grey[900],
-                  child: const Icon(
+                  backgroundColor: null,
+                  child: Icon(
                     Icons.camera_alt,
                     color: Color(0x00000000),
                     size: 40,

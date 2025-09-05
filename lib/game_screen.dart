@@ -10,7 +10,7 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  static const platform = MethodChannel('com.yourdomain.yourapp/unity');
+  static const platform = MethodChannel('com.saransa');
   bool _isUnityVisible = false;
 
   Future<void> _loadUnityScene(String sceneName) async {
