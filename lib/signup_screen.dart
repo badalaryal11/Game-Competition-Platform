@@ -31,6 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     color: Colors.black,
                   ),
                 ),
+
                 const SizedBox(height: 8),
                 Text(
                   'Play games. Sharpen your skills. Earn Money. Connect with other gamers.',
@@ -55,23 +56,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
                 const SizedBox(height: 32),
-                Text(
-                  'Upload Profile Picture',
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    color: Colors.grey[400],
-                  ),
-                ),
+
                 const SizedBox(height: 32),
-                const CircleAvatar(
-                  radius: 50,
-                  backgroundColor: null,
-                  child: Icon(
-                    Icons.camera_alt,
-                    color: Color(0x00000000),
-                    size: 40,
-                  ),
-                ),
+
                 const SizedBox(height: 32),
                 _buildInputField(hintText: 'Full Name'),
                 const SizedBox(height: 16),

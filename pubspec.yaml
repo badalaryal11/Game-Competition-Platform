@@ -1,21 +1,17 @@
 name: game_app
 description: "A new Flutter project."
 
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-
-
+publish_to: 'none'
 
 version: 1.0.0+1
 
 environment:
   sdk: ^3.8.1
 
-
 dependencies:
   flutter:
     sdk: flutter
-    google_sign_in: ^6.1.0  
-  
+  google_sign_in: ^6.2.1
   google_fonts: ^6.2.1
   http: ^1.2.1
   cupertino_icons: ^1.0.2
@@ -30,4 +26,3 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
-    
