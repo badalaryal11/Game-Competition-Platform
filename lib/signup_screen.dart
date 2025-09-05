@@ -151,6 +151,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 const SizedBox(height: 32),
                 _buildInputField(
+                  hintText: 'Full Name',
+                  controller: _fullNameController,
+                  errorText: _fullNameError,
+                ),
+                const SizedBox(height: 16),
+                _buildInputField(
+                  hintText: 'Username',
+                  controller: _usernameController,
+                  errorText: _usernameError,
+                ),
+                const SizedBox(height: 16),
+                _buildInputField(
+                  hintText: 'Phone Number',
+                  controller: _phoneController,
+                  errorText: _phoneError,
+                  keyboardType: TextInputType.phone,
+                ),
+                const SizedBox(height: 16),
+                _buildInputField(
                   hintText: 'Email Address',
                   controller: _emailController,
                   errorText: _emailError,
@@ -227,10 +246,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     bool obscureText = false,
     TextEditingController? controller,
     String? errorText,
+    TextInputType? keyboardType,
   }) {
     return TextField(
       controller: controller,
       obscureText: obscureText,
+      keyboardType: keyboardType,
       style: const TextStyle(color: Colors.black),
       decoration: InputDecoration(
         hintText: hintText,
