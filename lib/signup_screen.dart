@@ -95,7 +95,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (isEmailValid &&
         isPasswordValid &&
         isConfirmPasswordValid &&
-        isPhoneValid) {
+        isPhoneValid &&
+        _fullNameController.text.isNotEmpty &&
+        _usernameController.text.isNotEmpty) {
       // Proceed with sign up
       Navigator.of(context).pushNamed('/privacy');
     }
