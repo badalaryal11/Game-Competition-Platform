@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'models/user.dart';
+import 'repositories/user_repository.dart';
+
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
@@ -9,6 +12,8 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final _userRepository = UserRepository();
+
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -84,7 +89,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return true;
   }
 
-  void _handleSignUp() {
+  void _handleSignUp() async {
     final isEmailValid = _validateEmail(_emailController.text);
     final isPasswordValid = _validatePassword(_passwordController.text);
     final isConfirmPasswordValid = _validateConfirmPassword(
@@ -98,8 +103,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
         isPhoneValid &&
         _fullNameController.text.isNotEmpty &&
         _usernameController.text.isNotEmpty) {
-      // Proceed with sign up
-      Navigator.of(context).pushNamed('/privacy');
+      try {
+        final user = User(
+          fullName: _fullNameController.text,
+          username: _usernameController.text,
+          email: _emailController.text,
+          password: _passwordController.text,
+          phone: _phoneController.text,
+        );
+
+        await _userRepository.saveUser(user);
+
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Sign up successful!')));
+          Navigator.of(context).pushReplacementNamed('/signin');
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(e.toString())));
+        }
+      }
     }
   }
 

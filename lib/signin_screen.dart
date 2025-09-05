@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'repositories/user_repository.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -17,6 +18,8 @@ class _SignInScreenState extends State<SignInScreen> {
     clientId:
         '987383237018-0h1qmbn4528k7cditspks0j19jvr75jf.apps.googleusercontent.com', // <-- Add your client ID here
   );
+
+  final _userRepository = UserRepository();
 
   bool _rememberMe = false;
   bool _isLoading = false;
@@ -109,6 +112,30 @@ class _SignInScreenState extends State<SignInScreen> {
         setState(() {
           _isLoading = false;
         });
+      }
+    }
+  }
+
+  Future<void> _handleSignIn() async {
+    if (_validateEmail(_emailController.text)) {
+      try {
+        final user = await _userRepository.validateUser(
+          _emailController.text,
+          _passwordController.text,
+        );
+
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Sign in successful!')));
+          Navigator.of(context).pushReplacementNamed('/home');
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(e.toString())));
+        }
       }
     }
   }
