@@ -12,16 +12,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _fullNameController = TextEditingController();
+  final _usernameController = TextEditingController();
+  final _phoneController = TextEditingController();
 
   String? _emailError;
   String? _passwordError;
   String? _confirmPasswordError;
+  String? _fullNameError;
+  String? _usernameError;
+  String? _phoneError;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _fullNameController.dispose();
+    _usernameController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
