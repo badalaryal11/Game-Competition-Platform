@@ -70,14 +70,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return true;
   }
 
+  bool _validatePhone(String phone) {
+    final phoneRegex = RegExp(r'^\+?[0-9]{10,12}$');
+    if (phone.isEmpty) {
+      setState(() => _phoneError = 'Phone number is required');
+      return false;
+    }
+    if (!phoneRegex.hasMatch(phone)) {
+      setState(() => _phoneError = 'Please enter a valid phone number');
+      return false;
+    }
+    setState(() => _phoneError = null);
+    return true;
+  }
+
   void _handleSignUp() {
     final isEmailValid = _validateEmail(_emailController.text);
     final isPasswordValid = _validatePassword(_passwordController.text);
     final isConfirmPasswordValid = _validateConfirmPassword(
       _confirmPasswordController.text,
     );
+    final isPhoneValid = _validatePhone(_phoneController.text);
 
-    if (isEmailValid && isPasswordValid && isConfirmPasswordValid) {
+    if (isEmailValid &&
+        isPasswordValid &&
+        isConfirmPasswordValid &&
+        isPhoneValid) {
       // Proceed with sign up
       Navigator.of(context).pushNamed('/privacy');
     }
