@@ -159,6 +159,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
                     fontSize: 16,
+                    fontWeight: FontWeight.bold,
                     color: Colors.grey[400],
                   ),
                 ),
