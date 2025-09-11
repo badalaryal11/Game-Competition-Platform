@@ -9,6 +9,7 @@ import 'phone_verification_screen.dart';
 import 'otp_screen.dart';
 import 'onboarding_screen.dart';
 import 'landing_page.dart';
+import 'package:sqflite/sqflite.dart';
 
 void main() {
   runApp(const MyApp());
