@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'providers/auth_provider.dart';
 import 'models/user.dart';
 import 'repositories/user_repository.dart';
 
@@ -111,12 +113,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
           phone: _phoneController.text,
         );
 
-        await _userRepository.saveUser(user);
+        await context.read<AuthProvider>().signUp(user);
 
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Sign up successful!')));
           Navigator.of(context).pushReplacementNamed('/signin');
         }
       } catch (e) {

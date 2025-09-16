@@ -14,6 +14,8 @@ import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart'; // For web
 import 'dart:io' show Platform; // For platform detection
 import 'package:flutter/foundation.dart'
     show kIsWeb; // Required for kIsWeb check
+import 'package:provider/provider.dart';
+import 'providers/auth_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +27,9 @@ Future<void> main() async {
     databaseFactory = databaseFactoryFfi;
   }
 
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(create: (_) => AuthProvider(), child: const MyApp()),
+  );
 }
 
 class MyApp extends StatelessWidget {

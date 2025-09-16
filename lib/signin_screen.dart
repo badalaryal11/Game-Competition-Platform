@@ -4,6 +4,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'repositories/user_repository.dart';
+import 'package:provider/provider.dart';
+import 'providers/auth_provider.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -119,15 +121,12 @@ class _SignInScreenState extends State<SignInScreen> {
   Future<void> _handleSignIn() async {
     if (_validateEmail(_emailController.text)) {
       try {
-        final user = await _userRepository.validateUser(
+        await context.read<AuthProvider>().signIn(
           _emailController.text,
           _passwordController.text,
         );
 
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Sign in successful!')));
           Navigator.of(context).pushReplacementNamed('/home');
         }
       } catch (e) {
