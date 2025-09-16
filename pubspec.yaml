@@ -1,3 +1,4 @@
+
 name: game_app
 description: "A new Flutter project."
 
@@ -18,6 +19,9 @@ dependencies:
   flutter_unity_widget: ^2022.2.0
   shared_preferences: ^2.2.2
   sqflite: ^2.4.2
+  sqflite_common_ffi: ^2.3.0 # For desktop
+  sqflite_common_ffi_web: ^0.4.0 # For web
+  path: ^1.8.3
 
 dev_dependencies:
   flutter_test:

@@ -9,9 +9,22 @@ import 'phone_verification_screen.dart';
 import 'otp_screen.dart';
 import 'onboarding_screen.dart';
 import 'landing_page.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart'; // For desktop
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart'; // For web
+import 'dart:io' show Platform; // For platform detection
+import 'package:flutter/foundation.dart'
+    show kIsWeb; // Required for kIsWeb check
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  if (kIsWeb) {
+    databaseFactory = databaseFactoryFfiWeb;
+  } else if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
+
   runApp(const MyApp());
 }
 
@@ -21,17 +34,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'GCP Game',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.pink,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        fontFamily: 'Poppins',
-      ),
-
       // Set the new pre-splash screen as the initial route
       initialRoute: '/pre-splash',
-
       routes: {
         '/pre-splash': (context) => const PreSplashScreen(),
         '/splash': (context) => const SplashScreen(),

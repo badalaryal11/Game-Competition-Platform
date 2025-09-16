@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'models/user.dart';
 import 'repositories/user_repository.dart';
 
