@@ -46,7 +46,13 @@ buildscript {
     
     dependencies {
         
-        classpath 'com.google.gms:google-services:4.4.1' // Or the latest version
+        classpath 'com.google.gms:google-services:4.4.1'
+        dependencies {
+   
+    implementation files('libs/carrom_multiplayer.aar') 
+    // This single line includes every .aar file in the libs directory
+    implementation fileTree(dir: 'libs', include: ['*.aar'])
+} 
     }
 }
 
