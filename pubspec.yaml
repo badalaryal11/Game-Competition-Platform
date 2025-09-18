@@ -20,9 +20,8 @@ dependencies:
   sqflite: ^2.4.2
   sqflite_common_ffi: ^2.3.0 # For desktop
   sqflite_common_ffi_web: ^0.4.0 # For web
-  path: ^1.8.3  context.watch<AuthProvider>().currentUser  // For reactive updates
-  context.read<AuthProvider>().signIn(...)   // For calling methods
-  provider: ^6.1.1
+  
+  provider: ^6.1.1 #state management
 
 dev_dependencies:
   flutter_test:
