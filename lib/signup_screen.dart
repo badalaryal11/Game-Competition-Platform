@@ -6,7 +6,10 @@ import 'models/user.dart';
 import 'repositories/user_repository.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+  final String? initialEmail;
+  final String? initialFullName;
+
+  const SignUpScreen({super.key, this.initialEmail, this.initialFullName});
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -15,12 +18,19 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final _userRepository = UserRepository();
 
-  final _emailController = TextEditingController();
+  late final TextEditingController _emailController;
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final _fullNameController = TextEditingController();
+  late final TextEditingController _fullNameController;
   final _usernameController = TextEditingController();
   final _phoneController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController = TextEditingController(text: widget.initialEmail);
+    _fullNameController = TextEditingController(text: widget.initialFullName);
+  }
 
   String? _emailError;
   String? _passwordError;

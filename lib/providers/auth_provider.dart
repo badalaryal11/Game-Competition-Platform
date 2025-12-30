@@ -37,6 +37,19 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> checkUserExists(String email) async {
+    final user = await _userRepository.getUserByEmail(email);
+    return user != null;
+  }
+
+  Future<void> googleSignInSuccess(String email) async {
+    final user = await _userRepository.getUserByEmail(email);
+    if (user != null) {
+      _currentUser = user;
+      notifyListeners();
+    }
+  }
+
   void signOut() {
     _currentUser = null;
     notifyListeners();

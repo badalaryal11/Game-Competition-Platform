@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'repositories/user_repository.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
+import 'signup_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -15,11 +16,8 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  // Initialize GoogleSignIn with clientId.
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-    clientId:
-        '987383237018-0h1qmbn4528k7cditspks0j19jvr75jf.apps.googleusercontent.com', // <-- Add your client ID here
-  );
+  // Initialize GoogleSignIn.
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   final _userRepository = UserRepository();
 
@@ -78,30 +76,38 @@ class _SignInScreenState extends State<SignInScreen> {
         return;
       }
 
-      // *** FIXED: Re-added 'await' as authentication is an async operation ***
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-      final String? idToken = googleAuth.idToken;
+      // Check if user exists in local database
+      final authProvider = context.read<AuthProvider>();
+      final email = googleUser.email;
+      final exists = await authProvider.checkUserExists(email);
 
-      if (idToken == null) {
-        throw Exception('Could not retrieve Google ID token.');
-      }
-
-      final response = await http.post(
-        Uri.parse('flutter run'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({'idToken': idToken}),
-      );
-
-      if (response.statusCode == 200 && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Welcome ${googleUser.displayName}!')),
-        );
-        Navigator.of(context).pushReplacementNamed('/game');
-      } else {
-        throw Exception(
-          'Failed to authenticate with server: ${response.statusCode} ${response.body}',
-        );
+      if (mounted) {
+        if (exists) {
+          // User exists, log them in directly
+          await authProvider.googleSignInSuccess(email);
+          Navigator.of(context).pushReplacementNamed('/game');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Welcome back ${googleUser.displayName}!')),
+          );
+        } else {
+          // User does not exist, redirect to SignUp with pre-filled data
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder:
+                  (context) => SignUpScreen(
+                    initialEmail: email,
+                    initialFullName: googleUser.displayName,
+                  ),
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Please complete your registration to continue.',
+              ),
+            ),
+          );
+        }
       }
     } catch (error) {
       if (mounted) {

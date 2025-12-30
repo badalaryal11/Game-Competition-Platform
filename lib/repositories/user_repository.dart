@@ -18,4 +18,8 @@ class UserRepository {
     }
     return user;
   }
+
+  Future<User?> getUserByEmail(String email) async {
+    return await _dbHelper.getUserByEmail(email);
+  }
 }
