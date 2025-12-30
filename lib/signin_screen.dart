@@ -58,6 +58,15 @@ class _SignInScreenState extends State<SignInScreen> {
     return true;
   }
 
+  bool _validatePassword(String password) {
+    if (password.isEmpty) {
+      setState(() => _passwordError = 'Password is required');
+      return false;
+    }
+    setState(() => _passwordError = null);
+    return true;
+  }
+
   Future<void> _handleSignInAndBackendAuth() async {
     setState(() {
       _isLoading = true;
@@ -125,7 +134,12 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Future<void> _handleSignIn() async {
-    if (_validateEmail(_emailController.text)) {
+    final emailValid = _validateEmail(_emailController.text);
+    final passwordValid = _validatePassword(_passwordController.text);
+
+    if (emailValid && passwordValid) {
+      setState(() => _isLoading = true);
+
       try {
         await context.read<AuthProvider>().signIn(
           _emailController.text,
@@ -133,13 +147,23 @@ class _SignInScreenState extends State<SignInScreen> {
         );
 
         if (mounted) {
-          Navigator.of(context).pushReplacementNamed('/home');
+          // Use /game to match the Google Sign-In behavior
+          Navigator.of(context).pushReplacementNamed('/game');
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(e.toString())));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                e.toString().replaceAll('Exception: ', ''),
+              ), // Clean up error message
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
         }
       }
     }
@@ -191,7 +215,12 @@ class _SignInScreenState extends State<SignInScreen> {
                   errorText: _emailError,
                 ),
                 const SizedBox(height: 16),
-                _buildTextField(hint: 'Password', obscureText: true),
+                _buildTextField(
+                  hint: 'Password',
+                  obscureText: true,
+                  controller: _passwordController,
+                  errorText: _passwordError,
+                ),
                 const SizedBox(height: 16),
                 Row(
                   children: [
@@ -271,7 +300,7 @@ class _SignInScreenState extends State<SignInScreen> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () => Navigator.of(context).pushNamed('/game'),
+        onPressed: _isLoading ? null : _handleSignIn,
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFFD81B60),
           padding: const EdgeInsets.symmetric(vertical: 18),
@@ -281,14 +310,20 @@ class _SignInScreenState extends State<SignInScreen> {
           elevation: 5,
           shadowColor: Colors.pink.withAlpha(102),
         ),
-        child: Text(
-          'Sign In',
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
+        child: _isLoading
+            ? const SizedBox(
+              height: 24,
+              width: 24,
+              child: CircularProgressIndicator(color: Colors.white),
+            )
+            : Text(
+              'Sign In',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
       ),
     );
   }
