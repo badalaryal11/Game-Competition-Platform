@@ -1,1 +1,29 @@
-{"installed":{"client_id":"987383237018-sdcesdflgjudldivmnb1shj1hlafp64u.apps.googleusercontent.com","project_id":"gamecompetionplatform","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs"}}
+{
+  "project_info": {
+    "project_number": "811480479412",
+    "project_id": "game-competion-platform",
+    "storage_bucket": "game-competion-platform.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:811480479412:android:462ca9c2e2f05551ea49e1",
+        "android_client_info": {
+          "package_name": "com.saransa.game_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcpphmbWDbneH4NJVsUPWRvEfX5mFG8ZU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

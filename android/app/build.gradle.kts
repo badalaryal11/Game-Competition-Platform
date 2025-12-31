@@ -1,17 +1,16 @@
-apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
-
 plugins {
     id("com.android.application")
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+    id("com.google.gms.google-services")
 }
 
 android {
-    namespace = ""
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    namespace = "com.saransa.game_app"
+    compileSdk = 36
+    ndkVersion = "27.0.12077973"
+    buildToolsVersion = "34.0.0"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -28,7 +27,7 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 34
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -42,20 +41,11 @@ android {
     }
 }
 
-buildscript {
-    
-    dependencies {
-        
-        classpath 'com.google.gms:google-services:4.4.1'
-        dependencies {
-   
-    implementation files('libs/carrom_multiplayer.aar') 
-    // This single line includes every .aar file in the libs directory
-    implementation fileTree(dir: 'libs', include: ['*.aar'])
-} 
-    }
-}
-
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // implementation(files("libs/carrom_multiplayer.aar"))
+    // implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
 }

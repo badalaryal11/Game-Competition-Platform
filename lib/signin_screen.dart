@@ -185,10 +185,16 @@ class _SignInScreenState extends State<SignInScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: screenHeight * 0.08),
-                Image.asset(
-                  'assets/images/logo.png',
-                  height: 80,
-                  errorBuilder: (c, e, s) => const Icon(Icons.error, size: 80),
+                Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: const DecorationImage(
+                      image: AssetImage('assets/images/icon.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
                 SizedBox(height: screenHeight * 0.03),
                 Text(

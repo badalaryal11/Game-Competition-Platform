@@ -179,7 +179,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.grey[300]!, width: 1),
                     image: const DecorationImage(
-                      image: AssetImage('assets/images/logo.png'),
+                      image: AssetImage('assets/images/icon.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
