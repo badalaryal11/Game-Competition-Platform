@@ -57,3 +57,6 @@ assets/games/carrom_multiplayer.aar
 assets/games/carrom_singleplayer.aar
 assets/games/trial_app
 assets/games/trial_app.aar
+
+# Local Java Runtime
+android/java_runtime/

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'providers/auth_provider.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -47,10 +49,22 @@ class _GameScreenState extends State<GameScreen> {
             if (_isUnityVisible) {
               _unloadUnityScene();
             } else {
-              Navigator.of(context).pushReplacementNamed('/');
+              // Standard back navigation if needed, or leave empty if sign out is the only exit
+              Navigator.of(context).pop(); 
             }
           },
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Sign Out',
+            onPressed: () {
+              // Sign out logic
+              context.read<AuthProvider>().signOut();
+              Navigator.of(context).pushReplacementNamed('/');
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
