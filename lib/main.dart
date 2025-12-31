@@ -44,6 +44,7 @@ class MyApp extends StatelessWidget {
         '/pre-splash': (context) => const PreSplashScreen(),
         '/splash': (context) => const SplashScreen(),
         '/': (context) => const SignInScreen(),
+        '/signin': (context) => const SignInScreen(),
         '/signup': (context) => const SignUpScreen(),
         '/privacy': (context) => const PrivacyScreen(),
         '/phone-verify': (context) => const PhoneVerificationScreen(),
