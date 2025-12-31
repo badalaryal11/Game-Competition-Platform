@@ -10,12 +10,12 @@ class AuthProvider with ChangeNotifier {
   User? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
 
-  Future<void> signIn(String email, String password) async {
+  Future<void> signIn(String identifier, String password) async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      _currentUser = await _userRepository.validateUser(email, password);
+      _currentUser = await _userRepository.validateUser(identifier, password);
       notifyListeners();
     } finally {
       _isLoading = false;
@@ -51,6 +51,12 @@ class AuthProvider with ChangeNotifier {
   }
 
   void signOut() {
+    _currentUser = null;
+    notifyListeners();
+  }
+
+  Future<void> clearData() async {
+    await _userRepository.deleteAllUsers();
     _currentUser = null;
     notifyListeners();
   }

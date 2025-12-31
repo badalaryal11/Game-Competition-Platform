@@ -23,6 +23,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   bool _rememberMe = false;
   bool _isLoading = false;
+  bool _isPasswordVisible = false;
 
   // Add controllers at the top of the class
   final _emailController = TextEditingController();
@@ -40,17 +41,18 @@ class _SignInScreenState extends State<SignInScreen> {
     super.dispose();
   }
 
-  // Add email validation method
-  bool _validateEmail(String email) {
-    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-
-    if (email.isEmpty) {
-      setState(() => _emailError = 'Email is required');
+  // Add identifier validation method
+  bool _validateIdentifier(String identifier) {
+    if (identifier.isEmpty) {
+      setState(() => _emailError = 'Email or Mobile Number is required');
       return false;
     }
 
-    if (!emailRegex.hasMatch(email)) {
-      setState(() => _emailError = 'Please enter a valid email');
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    final phoneRegex = RegExp(r'^\+?[0-9]{10,12}$');
+
+    if (!emailRegex.hasMatch(identifier) && !phoneRegex.hasMatch(identifier)) {
+      setState(() => _emailError = 'Enter a valid email or phone number');
       return false;
     }
 
@@ -134,10 +136,10 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Future<void> _handleSignIn() async {
-    final emailValid = _validateEmail(_emailController.text);
+    final identifierValid = _validateIdentifier(_emailController.text);
     final passwordValid = _validatePassword(_passwordController.text);
 
-    if (emailValid && passwordValid) {
+    if (identifierValid && passwordValid) {
       setState(() => _isLoading = true);
 
       try {
@@ -216,7 +218,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 SizedBox(height: screenHeight * 0.05),
                 _buildTextField(
-                  hint: 'Email Address',
+                  hint: 'Email or Mobile Number',
                   controller: _emailController,
                   errorText: _emailError,
                 ),
@@ -224,6 +226,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 _buildTextField(
                   hint: 'Password',
                   obscureText: true,
+                  isPassword: true,
                   controller: _passwordController,
                   errorText: _passwordError,
                 ),
@@ -260,6 +263,22 @@ class _SignInScreenState extends State<SignInScreen> {
                   assetPath: 'assets/images/apple_logo.png',
                 ),
                 SizedBox(height: screenHeight * 0.05),
+                Center(
+                  child: TextButton(
+                    onPressed: () async {
+                      await context.read<AuthProvider>().clearData();
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('All data cleared')),
+                        );
+                      }
+                    },
+                    child: Text(
+                      'Reset App Data (Dev Only)',
+                      style: GoogleFonts.poppins(color: Colors.red),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -273,10 +292,11 @@ class _SignInScreenState extends State<SignInScreen> {
     bool obscureText = false,
     TextEditingController? controller,
     String? errorText,
+    bool isPassword = false,
   }) {
     return TextField(
       controller: controller,
-      obscureText: obscureText,
+      obscureText: isPassword ? !_isPasswordVisible : obscureText,
       decoration: InputDecoration(
         hintText: hint,
         errorText: errorText,
@@ -293,10 +313,23 @@ class _SignInScreenState extends State<SignInScreen> {
           vertical: 18,
           horizontal: 20,
         ),
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                  color: Colors.grey,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isPasswordVisible = !_isPasswordVisible;
+                  });
+                },
+              )
+            : null,
       ),
       onChanged: (value) {
-        if (hint == 'Email Address') {
-          _validateEmail(value);
+        if (hint == 'Email or Mobile Number') {
+          _validateIdentifier(value);
         }
       },
     );

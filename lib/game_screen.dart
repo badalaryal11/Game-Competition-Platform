@@ -56,7 +56,7 @@ class _GameScreenState extends State<GameScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.logout, color: Colors.black, size: 30),
             tooltip: 'Sign Out',
             onPressed: () {
               // Sign out logic

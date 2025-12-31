@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
 import 'models/user.dart';
 import 'repositories/user_repository.dart';
+import 'phone_verification_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   final String? initialEmail;
@@ -24,6 +25,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   late final TextEditingController _fullNameController;
   final _usernameController = TextEditingController();
   final _phoneController = TextEditingController();
+
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   @override
   void initState() {
@@ -100,7 +104,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return true;
   }
 
+  bool _validateFullName(String name) {
+    if (name.isEmpty) {
+      setState(() => _fullNameError = 'Full Name is required');
+      return false;
+    }
+    if (name.length < 3) {
+      setState(() => _fullNameError = 'Name must be at least 3 characters');
+      return false;
+    }
+    setState(() => _fullNameError = null);
+    return true;
+  }
+
+  bool _validateUsername(String username) {
+    if (username.isEmpty) {
+      setState(() => _usernameError = 'Username is required');
+      return false;
+    }
+    if (username.length < 3) {
+      setState(() => _usernameError = 'Username must be at least 3 characters');
+      return false;
+    }
+    setState(() => _usernameError = null);
+    return true;
+  }
+
   void _handleSignUp() async {
+    final isFullNameValid = _validateFullName(_fullNameController.text);
+    final isUsernameValid = _validateUsername(_usernameController.text);
     final isEmailValid = _validateEmail(_emailController.text);
     final isPasswordValid = _validatePassword(_passwordController.text);
     final isConfirmPasswordValid = _validateConfirmPassword(
@@ -108,12 +140,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
     final isPhoneValid = _validatePhone(_phoneController.text);
 
-    if (isEmailValid &&
+    if (isFullNameValid &&
+        isUsernameValid &&
+        isEmailValid &&
         isPasswordValid &&
         isConfirmPasswordValid &&
-        isPhoneValid &&
-        _fullNameController.text.isNotEmpty &&
-        _usernameController.text.isNotEmpty) {
+        isPhoneValid) {
       try {
         final user = User(
           fullName: _fullNameController.text,
@@ -126,7 +158,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
         await context.read<AuthProvider>().signUp(user);
 
         if (mounted) {
-          Navigator.of(context).pushReplacementNamed('/signin');
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder:
+                  (context) => PhoneVerificationScreen(
+                    phoneNumber: _phoneController.text,
+                    email: _emailController.text,
+                  ),
+            ),
+          );
         }
       } catch (e) {
         if (mounted) {
@@ -216,6 +256,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   controller: _passwordController,
                   obscureText: true,
                   errorText: _passwordError,
+                  isPassword: true,
+                  isVisible: _isPasswordVisible,
+                  onToggle: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
                 ),
                 const SizedBox(height: 16),
                 _buildInputField(
@@ -223,6 +266,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   controller: _confirmPasswordController,
                   obscureText: true,
                   errorText: _confirmPasswordError,
+                  isPassword: true,
+                  isVisible: _isConfirmPasswordVisible,
+                  onToggle: () => setState(() => _isConfirmPasswordVisible = !_isConfirmPasswordVisible),
                 ),
                 const SizedBox(height: 10),
 
@@ -283,10 +329,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
     TextEditingController? controller,
     String? errorText,
     TextInputType? keyboardType,
+    bool isPassword = false,
+    bool isVisible = false,
+    VoidCallback? onToggle,
   }) {
     return TextField(
       controller: controller,
-      obscureText: obscureText,
+      obscureText: isPassword ? !isVisible : obscureText,
       keyboardType: keyboardType,
       style: const TextStyle(color: Colors.black),
       decoration: InputDecoration(
@@ -311,6 +360,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
           vertical: 18,
           horizontal: 20,
         ),
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  isVisible ? Icons.visibility : Icons.visibility_off,
+                  color: Colors.grey,
+                ),
+                onPressed: onToggle,
+              )
+            : null,
       ),
     );
   }

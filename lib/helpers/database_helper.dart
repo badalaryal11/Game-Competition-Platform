@@ -45,12 +45,12 @@ class DatabaseHelper {
     );
   }
 
-  Future<User?> getUser(String email, String password) async {
+  Future<User?> getUser(String identifier, String password) async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
       'users',
-      where: 'email = ? AND password = ?',
-      whereArgs: [email, password],
+      where: '(email = ? OR phone = ?) AND password = ?',
+      whereArgs: [identifier, identifier, password],
     );
 
     if (maps.isEmpty) return null;
@@ -77,5 +77,10 @@ class DatabaseHelper {
 
     if (maps.isEmpty) return null;
     return User.fromJson(maps.first);
+  }
+
+  Future<void> deleteAllUsers() async {
+    final db = await database;
+    await db.delete('users');
   }
 }
