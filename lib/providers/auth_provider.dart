@@ -60,4 +60,22 @@ class AuthProvider with ChangeNotifier {
     _currentUser = null;
     notifyListeners();
   }
+
+  Future<String> sendVerificationCode(String contact) async {
+    _isLoading = true;
+    notifyListeners();
+    // Simulate network delay
+    await Future.delayed(const Duration(seconds: 2));
+
+    // Generate random 6-digit code
+    final code = (100000 + (DateTime.now().microsecond % 900000)).toString();
+
+    _isLoading = false;
+    notifyListeners();
+    return code;
+  }
+
+  bool verifyCode(String input, String actual) {
+    return input == actual;
+  }
 }
