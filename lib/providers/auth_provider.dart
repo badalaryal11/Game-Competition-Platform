@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 import '../models/user.dart';
 import '../repositories/user_repository.dart';
 
@@ -64,18 +66,58 @@ class AuthProvider with ChangeNotifier {
   Future<String> sendVerificationCode(String contact) async {
     _isLoading = true;
     notifyListeners();
-    // Simulate network delay
-    await Future.delayed(const Duration(seconds: 2));
 
-    // Generate random 6-digit code
-    final code = (100000 + (DateTime.now().microsecond % 900000)).toString();
+    final Completer<String> completer = Completer<String>();
 
-    _isLoading = false;
-    notifyListeners();
-    return code;
+    await fb.FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber: contact,
+      verificationCompleted: (fb.PhoneAuthCredential credential) async {
+        await fb.FirebaseAuth.instance.signInWithCredential(credential);
+        _isLoading = false;
+        notifyListeners();
+      },
+      verificationFailed: (fb.FirebaseAuthException e) {
+        _isLoading = false;
+        notifyListeners();
+        completer.completeError(e.message ?? 'Verification failed');
+      },
+      codeSent: (String verificationId, int? resendToken) {
+        _isLoading = false;
+        notifyListeners();
+        completer.complete(verificationId);
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+        if (!completer.isCompleted) {
+          _isLoading = false;
+          notifyListeners();
+          completer.complete(verificationId);
+        }
+      },
+    );
+
+    return completer.future;
   }
 
-  bool verifyCode(String input, String actual) {
-    return input == actual;
+  Future<bool> verifyCode(String verificationId, String smsCode) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+
+      fb.PhoneAuthCredential credential = fb.PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: smsCode,
+      );
+
+      final userCredential = await fb.FirebaseAuth.instance
+          .signInWithCredential(credential);
+
+      _isLoading = false;
+      notifyListeners();
+      return userCredential.user != null;
+    } catch (e) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
   }
 }

@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "811480479412",
-    "project_id": "game-competion-platform",
-    "storage_bucket": "game-competion-platform.firebasestorage.app"
+    "project_number": "405175061570",
+    "project_id": "gcpv2-2338e",
+    "storage_bucket": "gcpv2-2338e.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:811480479412:android:462ca9c2e2f05551ea49e1",
+        "mobilesdk_app_id": "1:405175061570:android:6f56cbcb4d4c6f0a1ff1db",
         "android_client_info": {
-          "package_name": "com.saransa.game_app"
+          "package_name": "com.saransa.game_app_v2"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCcpphmbWDbneH4NJVsUPWRvEfX5mFG8ZU"
+          "current_key": "AIzaSyBWMtvcTKRx7NRUkbj3JrFWh5Qtp0_9scI"
         }
       ],
       "services": {

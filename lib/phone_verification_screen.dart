@@ -19,7 +19,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
   final TextEditingController _codeController = TextEditingController();
   late TextEditingController _phoneController;
 
-  String? _serverOtp;
+  String? _verificationId;
   int _resendSeconds = 30;
   Timer? _timer;
   bool _canResend = false;
@@ -63,45 +63,52 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
     _startTimer();
     final authProvider = context.read<AuthProvider>();
 
-    // Generate code via provider
-    final code = await authProvider.sendVerificationCode(
-      widget.phoneNumber ?? '',
-    );
+    try {
+      // Generate code via provider
+      final verificationId = await authProvider.sendVerificationCode(
+        widget.phoneNumber ?? '',
+      );
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    setState(() {
-      _serverOtp = code;
-    });
+      setState(() {
+        _verificationId = verificationId;
+      });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Your Verification Code is: $code'),
-        backgroundColor: Colors.green,
-        duration: const Duration(seconds: 10),
-        action: SnackBarAction(
-          label: 'COPY',
-          textColor: Colors.white,
-          onPressed: () {
-            _codeController.text = code;
-          },
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Verification code sent. Please check your SMS.'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 5),
         ),
-      ),
-    );
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error sending code: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
-  void _verifyCode() {
+  Future<void> _verifyCode() async {
     final input = _codeController.text;
     final authProvider = context.read<AuthProvider>();
 
-    if (_serverOtp == null) {
+    if (_verificationId == null) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Please wait for the code')));
       return;
     }
 
-    if (authProvider.verifyCode(input, _serverOtp!)) {
+    final success = await authProvider.verifyCode(_verificationId!, input);
+
+    if (!mounted) return;
+
+    if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Verification Successful!'),
