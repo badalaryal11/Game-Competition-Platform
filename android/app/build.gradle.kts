@@ -46,6 +46,8 @@ flutter {
 }
 
 dependencies {
-    // implementation(files("libs/carrom_multiplayer.aar"))
+    // fileTree causes duplicates if we also list files manually, and we can't have both AARs active due to duplicate Unity runtime classes.
     // implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
+    implementation(files("libs/carrom_singleplayer.aar"))
+    // implementation(files("libs/carrom_multiplayer.aar"))
 }

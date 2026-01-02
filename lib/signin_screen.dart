@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'repositories/user_repository.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
@@ -104,18 +102,15 @@ class _SignInScreenState extends State<SignInScreen> {
           // User does not exist, redirect to SignUp with pre-filled data
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder:
-                  (context) => SignUpScreen(
-                    initialEmail: email,
-                    initialFullName: googleUser.displayName,
-                  ),
+              builder: (context) => SignUpScreen(
+                initialEmail: email,
+                initialFullName: googleUser.displayName,
+              ),
             ),
           );
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text(
-                'Please complete your registration to continue.',
-              ),
+              content: Text('Please complete your registration to continue.'),
             ),
           );
         }
@@ -351,18 +346,18 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
         child: _isLoading
             ? const SizedBox(
-              height: 24,
-              width: 24,
-              child: CircularProgressIndicator(color: Colors.white),
-            )
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(color: Colors.white),
+              )
             : Text(
-              'Sign In',
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+                'Sign In',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
-            ),
       ),
     );
   }

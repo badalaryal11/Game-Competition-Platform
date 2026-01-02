@@ -3,6 +3,8 @@ allprojects {
         google()
         mavenCentral()
     }
+    // Fix for plugins that miss compileSdkVersion (e.g. google_sign_in_android 6.x)
+    extra["compileSdkVersion"] = 34
 }
 
 val newBuildDir: Directory = rootProject.layout.buildDirectory.dir("../../build").get()
