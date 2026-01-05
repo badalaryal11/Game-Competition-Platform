@@ -144,6 +144,8 @@ class _SignInScreenState extends State<SignInScreen> {
     });
 
     try {
+      // Force account picker by signing out first
+      await _googleSignIn.signOut();
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
