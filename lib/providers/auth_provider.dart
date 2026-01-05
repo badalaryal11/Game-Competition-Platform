@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart' as fb;
 import '../models/user.dart';
 import '../repositories/user_repository.dart';
 
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+
 class AuthProvider with ChangeNotifier {
   final UserRepository _userRepository = UserRepository();
   User? _currentUser;
@@ -11,6 +13,28 @@ class AuthProvider with ChangeNotifier {
 
   User? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
+
+  Future<AuthorizationCredentialAppleID?> signInWithApple() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      _isLoading = false;
+      notifyListeners();
+      return credential;
+    } catch (e) {
+      _isLoading = false;
+      notifyListeners();
+      rethrow;
+    }
+  }
 
   Future<void> signIn(String identifier, String password) async {
     _isLoading = true;

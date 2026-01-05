@@ -65,6 +65,79 @@ class _SignInScreenState extends State<SignInScreen> {
     return true;
   }
 
+  Future<void> _handleAppleSignIn() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final authProvider = context.read<AuthProvider>();
+      final credential = await authProvider.signInWithApple();
+
+      if (credential == null) {
+        setState(() => _isLoading = false);
+        return;
+      }
+
+      final email = credential.email;
+
+      if (email == null) {
+        // Handle case where email is not shared (subsequent login)
+        // For this implementation, we require email as it's the primary key
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Could not retrieve email. Please Sign Up manually.',
+              ),
+            ),
+          );
+        }
+        setState(() => _isLoading = false);
+        return;
+      }
+
+      if (!mounted) return;
+      final exists = await authProvider.checkUserExists(email);
+
+      if (mounted) {
+        if (exists) {
+          await authProvider.googleSignInSuccess(email); // Reusing logic
+          if (!mounted) return;
+          Navigator.of(context).pushReplacementNamed('/game');
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Welcome back!')));
+        } else {
+          // New user
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => SignUpScreen(
+                initialEmail: email,
+                initialFullName:
+                    '${credential.givenName ?? ""} ${credential.familyName ?? ""}'
+                        .trim(),
+              ),
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Please complete your registration to continue.'),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Apple Sign In failed: $e')));
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
   Future<void> _handleSignInAndBackendAuth() async {
     setState(() {
       _isLoading = true;
@@ -255,7 +328,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 const SizedBox(height: 16),
                 _buildSocialButton(
-                  onPressed: () {},
+                  onPressed: _isLoading ? null : _handleAppleSignIn,
                   label: 'Sign In with Apple',
                   assetPath: 'assets/images/apple_logo.png',
                 ),

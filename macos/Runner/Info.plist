@@ -29,14 +29,19 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-	<key>CFBundleTypeRole</key>
-    <string>Editor</string>
-    <key>CFBundleURLSchemes</key>
-    <array>
-        <string>com.googleusercontent.apps.1045773439369-7bem2m85e1h35glg0ihma1t3ud4g52fc</string>
-    </array>
-    <key>GIDClientID</key>
-    <string>1045773439369-7bem2m85e1h35glg0ihma1t3ud4g52fc.apps.googleusercontent.com</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.1045773439369-7bem2m85e1h35glg0ihma1t3ud4g52fc</string>
+			</array>
+		</dict>
+	</array>
+	<key>GIDClientID</key>
+	<string>1045773439369-7bem2m85e1h35glg0ihma1t3ud4g52fc.apps.googleusercontent.com</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
