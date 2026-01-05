@@ -65,9 +65,12 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
 
     try {
       // Generate code via provider
-      final verificationId = await authProvider.sendVerificationCode(
-        widget.phoneNumber ?? '',
-      );
+      String number = widget.phoneNumber ?? '';
+      if (number.isNotEmpty && !number.startsWith('+')) {
+        number = '+977$number';
+      }
+
+      final verificationId = await authProvider.sendVerificationCode(number);
 
       if (!mounted) return;
 
@@ -148,109 +151,117 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            Text(
-              'Verify Account',
-              style: GoogleFonts.poppins(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
+              Text(
+                'Verify Account',
+                style: GoogleFonts.poppins(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              "We've sent a code to your email and phone.",
-              style: GoogleFonts.poppins(fontSize: 16, color: Colors.grey[600]),
-            ),
-            const SizedBox(height: 40),
-            Text(
-              "Phone: ${widget.phoneNumber ?? 'Unknown'}",
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
+              const SizedBox(height: 8),
+              Text(
+                "We've sent a code to your email and phone.",
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  color: Colors.grey[600],
+                ),
               ),
-            ),
-            Text(
-              "Email: ${widget.email ?? 'Unknown'}",
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
+              const SizedBox(height: 40),
+              Text(
+                "Phone: ${widget.phoneNumber ?? 'Unknown'}",
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
+              Text(
+                "Email: ${widget.email ?? 'Unknown'}",
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 20),
 
-            // Code input field
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              child: TextField(
-                controller: _codeController,
-                keyboardType: TextInputType.number,
-                style: GoogleFonts.poppins(fontSize: 18, color: Colors.black),
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Enter 6-digit code',
-                  hintStyle: GoogleFonts.poppins(color: Colors.grey[500]),
+              // Code input field
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
                 ),
-              ),
-            ),
-            const SizedBox(height: 32),
-            // Verify Button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: isLoading ? null : _verifyCode,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFD81B60),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 18),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  elevation: 0,
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(12.0),
                 ),
-                child: isLoading
-                    ? const SizedBox(
-                        height: 24,
-                        width: 24,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : Text(
-                        'Verify',
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Center(
-              child: TextButton(
-                onPressed: _canResend ? _sendVerificationCode : null,
-                child: Text(
-                  _canResend
-                      ? 'Resend Code'
-                      : 'Resend Code in $_resendSeconds s',
-                  style: GoogleFonts.poppins(
-                    color: _canResend ? const Color(0xFF004D40) : Colors.grey,
-                    fontWeight: FontWeight.w600,
+                child: TextField(
+                  controller: _codeController,
+                  keyboardType: TextInputType.number,
+                  style: GoogleFonts.poppins(fontSize: 18, color: Colors.black),
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Enter 6-digit code',
+                    hintStyle: GoogleFonts.poppins(color: Colors.grey[500]),
                   ),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 32),
+              // Verify Button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: isLoading ? null : _verifyCode,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFD81B60),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: isLoading
+                      ? const SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : Text(
+                          'Verify',
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Center(
+                child: TextButton(
+                  onPressed: _canResend ? _sendVerificationCode : null,
+                  child: Text(
+                    _canResend
+                        ? 'Resend Code'
+                        : 'Resend Code in $_resendSeconds s',
+                    style: GoogleFonts.poppins(
+                      color: _canResend ? const Color(0xFF004D40) : Colors.grey,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
