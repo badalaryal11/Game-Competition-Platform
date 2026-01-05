@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'repositories/user_repository.dart';
+
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
 import 'signup_screen.dart';
@@ -16,8 +16,6 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   // Initialize GoogleSignIn.
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-
-  final _userRepository = UserRepository();
 
   bool _rememberMe = false;
   bool _isLoading = false;
@@ -86,6 +84,7 @@ class _SignInScreenState extends State<SignInScreen> {
       }
 
       // Check if user exists in local database
+      if (!mounted) return;
       final authProvider = context.read<AuthProvider>();
       final email = googleUser.email;
       final exists = await authProvider.checkUserExists(email);
@@ -94,6 +93,7 @@ class _SignInScreenState extends State<SignInScreen> {
         if (exists) {
           // User exists, log them in directly
           await authProvider.googleSignInSuccess(email);
+          if (!mounted) return;
           Navigator.of(context).pushReplacementNamed('/game');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Welcome back ${googleUser.displayName}!')),
@@ -145,7 +145,9 @@ class _SignInScreenState extends State<SignInScreen> {
 
         if (mounted) {
           // Use /game to match the Google Sign-In behavior
-          Navigator.of(context).pushReplacementNamed('/game');
+          if (mounted) {
+            Navigator.of(context).pushReplacementNamed('/game');
+          }
         }
       } catch (e) {
         if (mounted) {
@@ -185,9 +187,9 @@ class _SignInScreenState extends State<SignInScreen> {
                 Container(
                   width: 120,
                   height: 120,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
-                    image: const DecorationImage(
+                    image: DecorationImage(
                       image: AssetImage('assets/images/icon.png'),
                       fit: BoxFit.cover,
                     ),
@@ -262,11 +264,10 @@ class _SignInScreenState extends State<SignInScreen> {
                   child: TextButton(
                     onPressed: () async {
                       await context.read<AuthProvider>().clearData();
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('All data cleared')),
-                        );
-                      }
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('All data cleared')),
+                      );
                     },
                     child: Text(
                       'Reset App Data (Dev Only)',

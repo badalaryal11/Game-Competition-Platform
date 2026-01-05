@@ -22,7 +22,7 @@ class _GameScreenState extends State<GameScreen> {
         _isUnityVisible = true;
       });
     } on PlatformException catch (e) {
-      print("Failed to load scene: '${e.message}'.");
+      debugPrint("Failed to load scene: '${e.message}'.");
     }
   }
 
@@ -33,7 +33,7 @@ class _GameScreenState extends State<GameScreen> {
         _isUnityVisible = false;
       });
     } on PlatformException catch (e) {
-      print("Failed to unload scene: '${e.message}'.");
+      debugPrint("Failed to unload scene: '${e.message}'.");
     }
   }
 
@@ -50,7 +50,7 @@ class _GameScreenState extends State<GameScreen> {
               _unloadUnityScene();
             } else {
               // Standard back navigation if needed, or leave empty if sign out is the only exit
-              Navigator.of(context).pop(); 
+              Navigator.of(context).pop();
             }
           },
         ),

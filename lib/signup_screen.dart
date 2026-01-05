@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
 import 'models/user.dart';
-import 'repositories/user_repository.dart';
+
 import 'phone_verification_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -17,8 +17,6 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final _userRepository = UserRepository();
-
   late final TextEditingController _emailController;
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -160,11 +158,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         if (mounted) {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder:
-                  (context) => PhoneVerificationScreen(
-                    phoneNumber: _phoneController.text,
-                    email: _emailController.text,
-                  ),
+              builder: (context) => PhoneVerificationScreen(
+                phoneNumber: _phoneController.text,
+                email: _emailController.text,
+              ),
             ),
           );
         }
@@ -258,7 +255,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   errorText: _passwordError,
                   isPassword: true,
                   isVisible: _isPasswordVisible,
-                  onToggle: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
+                  onToggle: () =>
+                      setState(() => _isPasswordVisible = !_isPasswordVisible),
                 ),
                 const SizedBox(height: 16),
                 _buildInputField(
@@ -268,7 +266,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   errorText: _confirmPasswordError,
                   isPassword: true,
                   isVisible: _isConfirmPasswordVisible,
-                  onToggle: () => setState(() => _isConfirmPasswordVisible = !_isConfirmPasswordVisible),
+                  onToggle: () => setState(
+                    () =>
+                        _isConfirmPasswordVisible = !_isConfirmPasswordVisible,
+                  ),
                 ),
                 const SizedBox(height: 10),
 
