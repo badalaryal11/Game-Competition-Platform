@@ -144,4 +144,15 @@ class AuthProvider with ChangeNotifier {
       return false;
     }
   }
+
+  Future<void> devLogin() async {
+    _currentUser = User(
+      email: 'dev@example.com',
+      fullName: 'Developer',
+      username: 'dev_user',
+      phone: '+1234567890',
+      password: 'password',
+    );
+    notifyListeners();
+  }
 }

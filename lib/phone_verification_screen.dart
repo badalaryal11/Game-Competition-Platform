@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
@@ -96,6 +97,84 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
     }
   }
 
+  Future<void> _showSuccessDialog() async {
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.green.withAlpha(30),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 64,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Verification Successful!',
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF004D40),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Your account has been verified. Welcome aboard!',
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close dialog
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFD81B60),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    'Continue to Game',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    if (mounted) {
+      Navigator.of(context).pushNamedAndRemoveUntil('/game', (route) => false);
+    }
+  }
+
   Future<void> _verifyCode() async {
     final input = _codeController.text;
     final authProvider = context.read<AuthProvider>();
@@ -112,20 +191,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
     if (!mounted) return;
 
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Verification Successful!'),
-          backgroundColor: Colors.green,
-        ),
-      );
-      // Navigate to game or next screen
-      Future.delayed(const Duration(milliseconds: 500), () {
-        if (mounted) {
-          Navigator.of(
-            context,
-          ).pushNamedAndRemoveUntil('/game', (route) => false);
-        }
-      });
+      await _showSuccessDialog();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -133,6 +199,24 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
           backgroundColor: Colors.red,
         ),
       );
+    }
+  }
+
+  Future<void> _developerBypass() async {
+    // Try standard verify first
+    final authProvider = context.read<AuthProvider>();
+    if (_verificationId != null) {
+      final success = await authProvider.verifyCode(_verificationId!, '123456');
+      if (success && mounted) {
+        await _showSuccessDialog();
+        return;
+      }
+    }
+
+    // If standard fails (e.g. real phone number used), force mock success
+    if (mounted) {
+      context.read<AuthProvider>().devLogin();
+      await _showSuccessDialog();
     }
   }
 
@@ -260,6 +344,24 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
                   ),
                 ),
               ),
+              if (kDebugMode) ...[
+                const SizedBox(height: 20),
+                Center(
+                  child: TextButton(
+                    onPressed: () {
+                      _codeController.text = '123456';
+                      _developerBypass();
+                    },
+                    child: const Text(
+                      'Developer Verify (123456)',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ),

@@ -18,9 +18,19 @@ import 'package:flutter/foundation.dart'
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
 
+import 'package:flutter/services.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  // Explicitly allow all orientations
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
 
   if (kIsWeb) {
     databaseFactory = databaseFactoryFfiWeb;
