@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -70,28 +71,37 @@ class _GameScreenState extends State<GameScreen> {
         children: [
           if (!_isUnityVisible)
             Expanded(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Select a Game',
-                      style: Theme.of(context).textTheme.headlineMedium
-                          ?.copyWith(color: Colors.black87),
-                    ),
-                    const SizedBox(height: 30),
-                    _buildGameButton(
-                      'Carrom Singleplayer',
-                      'CarromSingleplayerScene',
-                    ),
-                    const SizedBox(height: 20),
-                    _buildGameButton(
-                      'Carrom Multiplayer',
-                      'CarromMultiplayerScene',
-                    ),
-                    const SizedBox(height: 20),
-                    _buildGameButton('Trial App', 'TrialAppScene'),
-                  ],
+              child: SingleChildScrollView(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Select a Game',
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(color: Colors.black87),
+                      ),
+                      const SizedBox(height: 30),
+                      _buildGameTile(
+                        'Carrom Singleplayer',
+                        'CarromSingleplayerScene',
+                        'assets/images/carrom_singleplayer.jpg',
+                      ),
+                      const SizedBox(height: 20),
+                      _buildGameTile(
+                        'Carrom Multiplayer',
+                        'CarromMultiplayerScene',
+                        'assets/images/carrom_multiplayer.jpg',
+                      ),
+                      const SizedBox(height: 20),
+                      _buildGameTile(
+                        'Hero Trial',
+                        'TrialAppScene',
+                        'assets/images/hero_trial.jpg',
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -101,15 +111,49 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  Widget _buildGameButton(String title, String sceneName) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFFD81B60),
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-        textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+  Widget _buildGameTile(String title, String sceneName, String imagePath) {
+    return GestureDetector(
+      onTap: () => _loadUnityScene(sceneName),
+      child: Container(
+        height: 180,
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(horizontal: 20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          image: DecorationImage(
+            image: AssetImage(imagePath),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.3),
+              BlendMode.darken,
+            ),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Center(
+          child: Text(
+            title,
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              shadows: [
+                const Shadow(
+                  offset: Offset(0, 2),
+                  blurRadius: 4,
+                  color: Colors.black,
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
-      onPressed: () => _loadUnityScene(sceneName),
-      child: Text(title, style: const TextStyle(color: Colors.white)),
     );
   }
 
