@@ -48,7 +48,7 @@ class VerificationSuccessScreen extends StatelessWidget {
                   onPressed: () {
                     // Navigate to game/home screen and remove all previous routes
                     Navigator.of(context).pushNamedAndRemoveUntil(
-                      '/game',
+                      '/signin',
                       (Route<dynamic> route) => false,
                     );
                   },
