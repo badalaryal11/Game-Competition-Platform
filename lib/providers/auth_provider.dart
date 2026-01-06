@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import '../models/user.dart';
 import '../repositories/user_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
@@ -36,12 +37,23 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<void> signIn(String identifier, String password) async {
+  Future<void> signIn(
+    String identifier,
+    String password, {
+    bool rememberMe = false,
+  }) async {
     _isLoading = true;
     notifyListeners();
 
     try {
       _currentUser = await _userRepository.validateUser(identifier, password);
+
+      if (rememberMe && _currentUser != null) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('is_logged_in', true);
+        await prefs.setString('user_email', _currentUser!.email);
+      }
+
       notifyListeners();
     } finally {
       _isLoading = false;
@@ -68,6 +80,30 @@ class AuthProvider with ChangeNotifier {
     return user != null;
   }
 
+  Future<bool> tryAutoLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey('is_logged_in') || !prefs.getBool('is_logged_in')!) {
+      return false;
+    }
+
+    final email = prefs.getString('user_email');
+    if (email == null) {
+      return false;
+    }
+
+    try {
+      final user = await _userRepository.getUserByEmail(email);
+      if (user != null) {
+        _currentUser = user;
+        notifyListeners();
+        return true;
+      }
+    } catch (e) {
+      // Ignore error and fail auto login
+    }
+    return false;
+  }
+
   Future<void> googleSignInSuccess(String email) async {
     final user = await _userRepository.getUserByEmail(email);
     if (user != null) {
@@ -76,8 +112,10 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  void signOut() {
+  Future<void> signOut() async {
     _currentUser = null;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
     notifyListeners();
   }
 

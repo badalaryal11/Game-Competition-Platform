@@ -216,6 +216,7 @@ class _SignInScreenState extends State<SignInScreen> {
         await context.read<AuthProvider>().signIn(
           _emailController.text,
           _passwordController.text,
+          rememberMe: _rememberMe,
         );
 
         if (mounted) {

@@ -1,6 +1,8 @@
 import 'dart:async';
 // *** FIXED: Corrected the typo in the import path ***
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'providers/auth_provider.dart';
 
 class PreSplashScreen extends StatefulWidget {
   const PreSplashScreen({super.key});
@@ -13,13 +15,25 @@ class _PreSplashScreenState extends State<PreSplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Create a timer that will navigate to the next splash screen after 5 seconds
-    Timer(const Duration(seconds: 5), () {
-      if (mounted) {
-        // Navigate to the second splash screen
-        Navigator.of(context).pushReplacementNamed('/splash');
-      }
-    });
+    _checkAutoLogin();
+  }
+
+  Future<void> _checkAutoLogin() async {
+    // Artificial delay to show the splash screen
+    await Future.delayed(const Duration(seconds: 2));
+
+    if (!mounted) return;
+
+    final authProvider = context.read<AuthProvider>();
+    final isLoggedIn = await authProvider.tryAutoLogin();
+
+    if (!mounted) return;
+
+    if (isLoggedIn) {
+      Navigator.of(context).pushReplacementNamed('/game');
+    } else {
+      Navigator.of(context).pushReplacementNamed('/splash');
+    }
   }
 
   @override
