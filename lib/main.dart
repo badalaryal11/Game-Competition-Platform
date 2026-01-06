@@ -10,6 +10,7 @@ import 'phone_verification_screen.dart';
 import 'otp_screen.dart';
 import 'onboarding_screen.dart';
 import 'landing_page.dart';
+import 'verification_success_screen.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart'; // For desktop
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart'; // For web
 import 'dart:io' show Platform; // For platform detection
@@ -64,6 +65,7 @@ class MyApp extends StatelessWidget {
         '/onboarding': (context) => const OnboardingScreen(),
         '/landing': (context) => const LandingPage(),
         '/game': (context) => const GameScreen(),
+        '/verification-success': (context) => const VerificationSuccessScreen(),
       },
     );
   }
