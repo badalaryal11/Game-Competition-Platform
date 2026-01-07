@@ -59,7 +59,7 @@ class VerificationSuccessScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                     elevation: 5,
-                    shadowColor: Colors.pink.withOpacity(0.4),
+                    shadowColor: Colors.pink.withValues(alpha: 0.4),
                   ),
                   child: Text(
                     'Continue',

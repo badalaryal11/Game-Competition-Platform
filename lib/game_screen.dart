@@ -100,6 +100,18 @@ class _GameScreenState extends State<GameScreen> {
                         'assets/images/hero_trial.jpg',
                       ),
                       const SizedBox(height: 20),
+                      _buildGameTile(
+                        'Chess',
+                        'ChessScene',
+                        'assets/images/chess_game.jpg',
+                      ),
+                      const SizedBox(height: 20),
+                      _buildGameTile(
+                        'Fast Ludo',
+                        'LudoScene',
+                        'assets/images/fast_ludo.jpg',
+                      ),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ),
@@ -124,13 +136,13 @@ class _GameScreenState extends State<GameScreen> {
             image: AssetImage(imagePath),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.3),
+              Colors.black.withValues(alpha: 0.3),
               BlendMode.darken,
             ),
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha: 0.2),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
