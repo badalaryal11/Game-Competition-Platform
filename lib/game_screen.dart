@@ -124,10 +124,14 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   Widget _buildGameTile(String title, String sceneName, String imagePath) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    // use 20% of screen height but clamp between 150 and 220
+    final tileHeight = (screenHeight * 0.22).clamp(150.0, 220.0);
+
     return GestureDetector(
       onTap: () => _loadUnityScene(sceneName),
       child: Container(
-        height: 180,
+        height: tileHeight,
         width: double.infinity,
         margin: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
